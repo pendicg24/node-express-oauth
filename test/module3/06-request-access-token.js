@@ -47,6 +47,7 @@ it("/callback requests access token from the token endpoint @client-callback-req
 			"post",
 			"the request made to the token endpoint should be a POST request"
 		)
+		console.log(req.config.headers.Authorization)
 		assert.equal(
 			req.config.headers.Authorization,
 			"Basic bXktY2xpZW50OnpFVHFIZ2wwZDdUaHlzVXFQbmFGdUxPbUcxRT0=",
