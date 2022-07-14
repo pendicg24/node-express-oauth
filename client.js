@@ -35,33 +35,28 @@ app.get('/callback', async (req, res) => {
 	const receivedState = req.query.state;
 	if(receivedState !== state) return res.status(403).send();
 
-	try {
-		const response = await axios.post(config.tokenEndpoint, {
-			code: req.query.code,
-		}, {
-			auth: {
-				//Authorization: `Basic ${Buffer.from(config.clientId + ':' + config.clientSecret).toString('base64')}`/*).toString('base64')*/,
-				username: config.clientId,
-				password: config.clientSecret,
-			},
-			headers: {
-				'Access-Control-Allow-Origin': '*'
-			}
-		})
-		const access_token = response.data.access_token;
-		const responseUserData = await axios.get(config.userInfoEndpoint, {
-			headers: {
-				Authorization: `bearer ${access_token}`,
-				'Access-Control-Allow-Origin': '*'
-			},
-		});
-
-		res.render('welcome', {
-			user: responseUserData.data
-		});
-	} catch(err) {
-		res.status(err.status).send();
-	}
+	const response = await axios.post(config.tokenEndpoint, {
+		code: req.query.code,
+	}, {
+		auth: {
+			//Authorization: `Basic ${Buffer.from(config.clientId + ':' + config.clientSecret).toString('base64')}`/*).toString('base64')*/,
+			username: config.clientId,
+			password: config.clientSecret,
+		},
+		headers: {
+			'Access-Control-Allow-Origin': '*'
+		}
+	})
+	const access_token = response.data.access_token;
+	const responseUserData = await axios.get(config.userInfoEndpoint, {
+		headers: {
+			Authorization: `bearer ${access_token}`,
+			'Access-Control-Allow-Origin': '*'
+		},
+	});
+	res.render('welcome', {
+		user: responseUserData.data
+	});
 });
 
 const server = app.listen(config.port, "localhost", function () {
